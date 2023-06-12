@@ -174,3 +174,28 @@ def write_output_data(solution, filename):
         # Завершение записи и закрытие файла
         file.write("----------------------------------------\n")
         file.write("Решение записано успешно.")
+
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.animation import FuncAnimation
+
+def plot_solution_3d(solution, x_values, y_values, z_label):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Создание сетки для осей x и y
+    X, Y = np.meshgrid(x_values, y_values)
+
+    def update_frame(frame):
+        ax.cla()  # Очистка графика перед каждым кадром
+        ax.plot_surface(X, Y, solution[frame], cmap='viridis')
+        ax.set_xlabel("Ось X")
+        ax.set_ylabel("Ось Y")
+        ax.set_zlabel(z_label)
+        ax.set_title("Анимация графической модели")
+
+    # Создание анимации
+    anim = FuncAnimation(fig, update_frame, frames=len(solution), interval=200)
+
+    plt.show()
