@@ -159,3 +159,18 @@ def collect_data_from_interface():
     # Возвращаем собранные данные
     return time, x_coord, y_coord, z_coord, temperature, thermal_conductivity, density, specific_heat, heat_source, \
            spatial_step_x, spatial_step_y, spatial_step_z, time_step, matrix
+
+def write_output_data(solution, filename):
+    with open(filename, 'w') as file:
+        # Запись заголовка или описания данных
+        file.write("Результаты решения задачи теплопроводности\n")
+        file.write("----------------------------------------\n")
+        
+        # Запись числовых значений решения
+        file.write("Решение:\n")
+        for i in range(len(solution)):
+            file.write(f"Температура в точке {i}: {solution[i]}\n")
+        
+        # Завершение записи и закрытие файла
+        file.write("----------------------------------------\n")
+        file.write("Решение записано успешно.")
