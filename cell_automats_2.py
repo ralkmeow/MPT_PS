@@ -127,3 +127,72 @@ ax.plot_surface(X, Y, Z, cmap='plasma')
 
 ax.view_init(15, -135)
 plt.show()
+
+import numpy as np
+
+def collect_data_from_interface():
+    # Считываем значения параметров из интерфейса
+    time = float(time_input.text())
+    x_coord = float(x_input.text())
+    y_coord = float(y_input.text())
+    z_coord = float(z_input.text())
+    temperature = float(temperature_input.text())
+    thermal_conductivity = float(thermal_conductivity_input.text())
+    density = float(density_input.text())
+    specific_heat = float(specific_heat_input.text())
+    heat_source = float(heat_source_input.text())
+    spatial_step_x = float(spatial_step_x_input.text())
+    spatial_step_y = float(spatial_step_y_input.text())
+    spatial_step_z = float(spatial_step_z_input.text())
+    time_step = float(time_step_input.text())
+
+    # Считываем данные из таблицы в матрицу
+    table_data = []
+    for row in range(table.rowCount()):
+        table_row = []
+        for column in range(table.columnCount()):
+            item = table.item(row, column)
+            table_row.append(float(item.text()))
+        table_data.append(table_row)
+    matrix = np.array(table_data)
+
+    # Возвращаем собранные данные
+    return time, x_coord, y_coord, z_coord, temperature, thermal_conductivity, density, specific_heat, heat_source, \
+           spatial_step_x, spatial_step_y, spatial_step_z, time_step, matrix
+
+def write_output_data(solution, filename):
+    with open(filename, 'w') as file:
+        # Запись заголовка или описания данных
+        file.write("Результаты решения задачи теплопроводности\n")
+        file.write("----------------------------------------\n")
+        
+        # Запись числовых значений решения
+        file.write("Решение:\n")
+        for i in range(len(solution)):
+            file.write(f"Температура в точке {i}: {solution[i]}\n")
+        
+        # Завершение записи и закрытие файла
+        file.write("----------------------------------------\n")
+        file.write("Решение записано успешно.")
+
+
+def plot_solution_3d(solution, x_values, y_values, z_label):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Создание сетки для осей x и y
+    X, Y = np.meshgrid(x_values, y_values)
+
+    def update_frame(frame):
+        ax.cla()  # Очистка графика перед каждым кадром
+        ax.plot_surface(X, Y, solution[frame], cmap='viridis')
+        ax.set_xlabel("Ось X")
+        ax.set_ylabel("Ось Y")
+        ax.set_zlabel(z_label)
+        ax.set_title("Анимация графической модели")
+
+    # Создание анимации
+    anim = FuncAnimation(fig, update_frame, frames=len(solution), interval=200)
+
+    plt.show()
+
